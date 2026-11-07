@@ -926,7 +926,7 @@
         var blob = new Blob([JSON.stringify(S, null, 1)], { type: "application/json" });
         var a = h("a", { href: URL.createObjectURL(blob), download: "progression-" + today() + ".json" });
         document.body.appendChild(a); a.click(); a.remove();
-        say2("Fichier téléchargé.");
+        say2("Download started. If no file appears, use Copier instead.");
       } catch (e) { say2("Download unavailable here: use Copier."); }
     } }));
     pa.appendChild(h("button", { type: "button", text: "Copier", title: "Copy your progress to the clipboard", onclick: function () {
