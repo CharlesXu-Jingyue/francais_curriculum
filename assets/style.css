@@ -250,6 +250,7 @@ td.fr { color: var(--fr); }
 
 /* ---------- reading and vocabulary ---------- */
 .reading { color: var(--fr); }
+.reading .who { color: var(--soft); font-style: italic; margin-right: .2em; }
 .toggle { font-size: 15px; color: var(--soft); display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
 .toggle input { accent-color: var(--fr); width: 16px; height: 16px; margin: 0; }
 .vocab { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
@@ -261,7 +262,7 @@ td.fr { color: var(--fr); }
 .phase p + p { margin-top: 0; }
 .phase h2 .weeks { font: italic 400 15px/var(--u) var(--text); color: var(--soft); margin-left: 8px; }
 .phase .keys { color: var(--fr); }
-.phase .keys span + span::before { content: ", "; color: var(--soft); }
+.phase .keys .sep { color: var(--soft); }
 details > summary { list-style: none; cursor: pointer; color: var(--fr); font-size: 15px; display: inline-block; }
 details > summary::-webkit-details-marker { display: none; }
 details > summary::before { content: "+ "; color: var(--soft); }
@@ -324,7 +325,8 @@ details[open] > summary::before { content: "− "; }
 .fiche:not([hidden]) { animation: fiche-in .14s ease-out; }
 @keyframes fiche-in { from { opacity: 0; transform: translateY(-4px); } }
 .fiche-head { display: flex; align-items: center; gap: 2px; }
-.fiche-mot { flex: 1; min-width: 0; font: 400 22px/32px var(--text); color: var(--fr); overflow-wrap: anywhere; }
+.fiche-mot { min-width: 0; font: 400 22px/32px var(--text); color: var(--fr); overflow-wrap: anywhere; }
+.fiche-ipa { flex: 1; min-width: 0; margin-left: 10px; font-size: 16px; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fiche-x { width: 32px; padding: 0; justify-content: center; box-shadow: none; color: var(--soft); font-size: 22px; }
 .fiche p { margin: 0; }
 .fiche-a { color: var(--soft); }

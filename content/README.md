@@ -119,7 +119,8 @@ Answers are compared after lowering case, normalising apostrophes and spaces, an
 ```js
 lecture: {
   phrases: [ { fr: "Léa habit{s:e} à Lyon.", en: "Léa lives in Lyon." }, ... ],
-  notes: [ { label: "faux ami", html: "{fr:librairie}: bookshop, not library" } ]
+  notes: [ { label: "faux ami", html: "{fr:librairie}: bookshop, not library" } ],
+  dialogue: true          // optional: one line per phrase, «Nom :» prefixes shown as speaker names
 }
 ```
 
@@ -139,12 +140,13 @@ lecture: {
 One entry per **surface form** that appears in the unit's French text and is not already in `content/lexique.js` or an earlier unit:
 
 ```js
-// key,        dictionary form,  category,       gender, analysis,                    English,         note
-["mangeons",   "manger",         "verbe en -er", "",     "présent : nous",            "eat",           "The e keeps the g soft /ʒ/ before o."],
-["gare",       "une gare",       "nom",          "f",    "",                          "(train) station", ""],
+// key,      dictionary form, category,       gender, analysis,         English,           note,                                   IPA
+["mangeons", "manger",        "verbe en -er", "",     "présent : nous", "eat",             "The e keeps the g soft /ʒ/ before o.", "/mɑ̃ʒɔ̃/"],
+["gare",     "une gare",      "nom",          "f",    "",               "(train) station", "",                                     "/ɡaʁ/"],
 ```
 
 - `key`: lower case, straight apostrophe for elided forms (`"l'"`, `"c'"`).
 - Dictionary form of a noun includes its article (`une gare`, `l’ami (m)` when elided).
 - Category and analysis in French; English meaning and note in English.
+- IPA of the key as an isolated word, standard Parisian French, in slashes, no liaison: `/paʁlɔ̃/`, `/il/` for ils, `/l/` for l’. The fiche shows it next to the word.
 - Every word in examples, reading, vocabulary, tables and `{fr:}` spans must resolve to an entry. The validator lists the missing ones.

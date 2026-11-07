@@ -15,6 +15,16 @@ Progress is saved in the browser. To keep it in the repo or move it to another m
 
 Audio uses the browser's built-in French voice. On macOS, the enhanced French voices (downloadable in System Settings under Accessibility → Spoken Content) sound much better than the defaults.
 
+## Online (GitHub Pages)
+
+Every push to `main` runs `.github/workflows/pages.yml`: it checks all units with `tools/validate.js` and, if they pass, publishes the page to
+
+**https://charlesxu-jingyue.github.io/francais_curriculum/**
+
+If a unit breaks the rules, the run fails and the previous version stays online; the Actions tab shows which unit and why. One-time setup: in the repository, *Settings → Pages → Build and deployment → Source: GitHub Actions*.
+
+The site is public, like the repository. Anything committed under `progress/` is public too.
+
 ## Files
 
 | Path | What it is |
@@ -27,6 +37,7 @@ Audio uses the browser's built-in French voice. On macOS, the enhanced French vo
 | `content/units/*.js` | One file per unit |
 | `content/README.md` | How to write a unit |
 | `tools/validate.js` | Checks units against the authoring rules: `node tools/validate.js` |
+| `.github/workflows/pages.yml` | Checks the units, then publishes to GitHub Pages |
 | `design/mockup.html` | The original design mockup |
 
 ## Adding a unit

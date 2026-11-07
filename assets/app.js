@@ -142,13 +142,26 @@
 
   /* ================= lexicon and fiches ================= */
   var LEX = {};
-  function addLex(r) { if (!LEX[r[0]]) LEX[r[0]] = { l: r[1], c: r[2], g: r[3], a: r[4], en: r[5], n: r[6] }; }
+  function addLex(r) { if (!LEX[r[0]]) LEX[r[0]] = { l: r[1], c: r[2], g: r[3], a: r[4], en: r[5], n: r[6], ipa: r[7] || "" }; }
   var LET = "A-Za-zÀ-ÖØ-öø-ÿŒœ";
   var WORD = new RegExp("(?:[cdjlmnstCDJLMNST]|[Qq]u|[Jj]usqu|[Ll]orsqu|[Pp]uisqu)['’](?=[" + LET + "])|[" + LET + "]+(?:['’-][" + LET + "]+)*", "g");
-  var GLOSS_SEL = ".date, h1, h2, .note, .f, .fr-line, .reading, td.fr, .vf, .where, .glossable";
+  /* IPA for a short phrase, built from the words' fiches: "la gare" gives /la ɡaʁ/; "" if a word has none */
+  function phraseIpa(text) {
+    var ok = true, re = new RegExp(WORD.source, "g");
+    var out = plain(text).replace(/‿/g, " ").replace(re, function (w) {
+      var e = LEX[w.toLowerCase().replace(/’/g, "'")];
+      if (!e || !e.ipa) { ok = false; return w; }
+      return e.ipa.replace(/^\/|\/$/g, "") + (/['’]$/.test(w) ? "\u0000" : "");
+    }).replace(/\u0000\s*/g, "").replace(/['’]/g, "");
+    return ok ? "/" + out.trim() + "/" : "";
+  }
+  var GLOSS_SEL = ".date, h1, h2, h3, th, .note, .f, .fr-line, .reading, td.fr, .vf, .where, .glossable, .consigne, .hint, .q-fr";
   function glossify(root) {
     $$(GLOSS_SEL, root).filter(function (b) {
-      return !b.closest(".item, button, .legend, .drawer, .panel") && !(b.parentElement && b.parentElement.closest(GLOSS_SEL)) && !b.querySelector(".w");
+      /* exercise prompts become tappable only once answered, so a fiche never gives an answer away; instructions always are */
+      var inItem = b.closest(".item");
+      if (inItem && !inItem.classList.contains("answered") && !b.matches(".consigne, .hint")) return false;
+      return !b.closest("button, .legend, .drawer, .panel, summary") && !(b.parentElement && b.parentElement.closest(GLOSS_SEL)) && !b.querySelector(".w");
     }).forEach(glossBox);
   }
   function glossBox(box) {
@@ -187,7 +200,7 @@
   function buildFiche() {
     fiche = h("div", { class: "fiche", id: "fiche", role: "dialog", "aria-labelledby": "fiche-mot", tabindex: "-1", hidden: true });
     fiche.innerHTML =
-      '<div class="fiche-head"><span class="fiche-mot" id="fiche-mot"></span></div>' +
+      '<div class="fiche-head"><span class="fiche-mot" id="fiche-mot"></span><span class="fiche-ipa ipa"></span></div>' +
       '<p class="fiche-l"></p><p class="fiche-a"></p><p class="fiche-en"></p><p class="fiche-n"></p><p class="fiche-ph" hidden></p>' +
       '<div class="fiche-actions"><button type="button" class="b-ph" title="Translate the whole sentence">Traduire la phrase</button>' +
       '<button type="button" class="b-rev" aria-pressed="false" title="Add this word to your review queue">Ajouter à la révision</button></div>';
@@ -201,7 +214,7 @@
     });
     head.appendChild(fx.say);
     head.appendChild(h("button", { type: "button", class: "fiche-x", "aria-label": "Fermer", title: "Close", onclick: function () { closeFiche(true); } }, "×"));
-    fx.mot = $(".fiche-mot", fiche); fx.l = $(".fiche-l", fiche); fx.a = $(".fiche-a", fiche); fx.en = $(".fiche-en", fiche);
+    fx.mot = $(".fiche-mot", fiche); fx.ipa = $(".fiche-ipa", fiche); fx.l = $(".fiche-l", fiche); fx.a = $(".fiche-a", fiche); fx.en = $(".fiche-en", fiche);
     fx.n = $(".fiche-n", fiche); fx.ph = $(".fiche-ph", fiche); fx.bph = $(".b-ph", fiche); fx.rev = $(".b-rev", fiche);
     fx.bph.addEventListener("click", function () {
       fx.ph.hidden = !fx.ph.hidden;
@@ -211,7 +224,7 @@
     fx.rev.addEventListener("click", function () {
       if (!ficheWord) return;
       var k = ficheWord.dataset.k, e = LEX[k], on = !S.mots[k];
-      if (on) S.mots[k] = { fr: e.l, en: e.en, box: 1, due: today(), added: today() }; else delete S.mots[k];
+      if (on) S.mots[k] = { fr: e.l, en: e.en, ipa: e.ipa, box: 1, due: today(), added: today() }; else delete S.mots[k];
       save(); syncRevBtn(k); updateDue();
     });
     document.body.appendChild(fiche);
@@ -253,6 +266,7 @@
     if (ficheWord) ficheWord.classList.remove("on");
     ficheWord = w; w.classList.add("on");
     fx.mot.innerHTML = w.innerHTML;
+    fx.ipa.textContent = e.ipa; fx.ipa.hidden = !e.ipa;
     var g = /^(nom|adjectif)/.test(e.c) && e.g ? (e.g === "m" ? " masculin" : " féminin") : "";
     fx.l.innerHTML = '<span class="f">' + esc(e.l) + "</span>, " + esc(e.c) + g;
     fx.a.textContent = e.a; fx.a.hidden = !e.a;
@@ -381,6 +395,8 @@
       noteSlot.innerHTML = v.v === "ko" && it.note ? note(esc(it.note), "red") : v.v === "near" ? note("attention aux accents", "fr") : "";
       if (it.why) { why.innerHTML = ink(it.why); why.hidden = false; }
       bottom.hidden = false;
+      if (!wrap.classList.contains("answered")) { wrap.classList.add("answered"); }
+      glossify(wrap);
       if (!recorded) { recorded = true; record(id, ctx.uid, v.v, ctx.mode); if (ctx.onDone) ctx.onDone(v.v); }
     }
     function textInput(wide, value, placeholder) {
@@ -613,8 +629,11 @@
       var para = h("p", { class: "reading plain" });
       var seq = [];
       L.phrases.forEach(function (p, i) {
-        var s = h("span", { class: "s", "data-en": p.en }, ink(p.fr));
-        para.appendChild(s); if (i < L.phrases.length - 1) para.appendChild(document.createTextNode(" "));
+        var html = ink(p.fr), who = L.dialogue && /^([^:<{]{1,24}) : /.exec(p.fr);
+        if (who) html = '<span class="who">' + esc(who[1]) + "</span> " + ink(p.fr.slice(who[0].length));
+        var s = h("span", { class: "s", "data-en": p.en }, html);
+        para.appendChild(s);
+        if (i < L.phrases.length - 1) para.appendChild(L.dialogue ? h("br") : document.createTextNode(" "));
         seq.push({ text: speakable(p.fr), el: s });
       });
       var trans = h("p", { class: "gl", hidden: true, text: L.phrases.map(function (p) { return p.en; }).join(" ") });
@@ -637,7 +656,7 @@
       };
       syncVoc();
       bVoc.addEventListener("click", function () {
-        u.vocabulaire.forEach(function (v, i) { if (!S.mots[keys[i]]) S.mots[keys[i]] = { fr: plain(v.fr), en: v.en, box: 1, due: today(), added: today() }; });
+        u.vocabulaire.forEach(function (v, i) { if (!S.mots[keys[i]]) S.mots[keys[i]] = { fr: plain(v.fr), en: v.en, ipa: phraseIpa(v.fr), box: 1, due: today(), added: today() }; });
         save(); syncVoc(); updateDue();
       });
       add(gap()); add(heading(ROMAN[sec++], "Vocabulaire", [bVoc]));
@@ -697,11 +716,11 @@
       var t = h("div", { class: "phase" });
       t.innerHTML = "<h2>" + esc(ph.nom) + (ph.semaines ? '<span class="weeks">' + ph.semaines + " semaines</span>" : "") + "</h2>" +
         "<p>" + esc(ph.peut) + "</p>" +
-        '<p class="keys">' + ph.cles.map(function (k) { return "<span>" + esc(k) + "</span>"; }).join("") + "</p>";
+        '<p class="keys glossable">' + ph.cles.map(function (k) { return "<span>" + esc(k) + "</span>"; }).join('<span class="sep">, </span>') + "</p>";
       var meta = ph.units.length
         ? (done + " sur " + ph.units.length + " unités faites" + (ph.point ? ", point " + ph.point + " à la fin" : ""))
         : "Planned once stage 3 is under way.";
-      t.appendChild(h("p", { class: "soft small", text: meta }));
+      t.appendChild(h("p", { class: "soft small" + (ph.units.length ? " glossable" : ""), text: meta }));
       if (ph.units.length) {
         var det = h("details", here ? { open: true } : null);
         det.appendChild(h("summary", { text: "Les " + ph.units.length + " unités" + (written.length ? ", dont " + written.length + " prêtes" : "") }));
@@ -790,8 +809,8 @@
     if (!total) {
       var nd = nextDue();
       var empty = Object.keys(S.srs).length + Object.keys(S.mots).length === 0
-        ? "<p>Rien à revoir pour l’instant.</p><p class=\"soft small\">The queue fills as you work: every exercise you answer joins it, and so do words you add from a fiche or a vocabulary list. Each comes back after 1, 3, 7, 16 and then 35 days while you keep getting it right.</p>"
-        : "<p>Rien à revoir aujourd’hui.</p>" + (nd ? '<p class="soft small">Prochaine révision : ' + frIso(nd) + ".</p>" : "");
+        ? "<p class=\"glossable\">Rien à revoir pour l’instant.</p><p class=\"soft small\">The queue fills as you work: every exercise you answer joins it, and so do words you add from a fiche or a vocabulary list. Each comes back after 1, 3, 7, 16 and then 35 days while you keep getting it right.</p>"
+        : "<p class=\"glossable\">Rien à revoir aujourd’hui.</p>" + (nd ? '<p class="soft small glossable">Prochaine révision : ' + frIso(nd) + ".</p>" : "");
       stage.appendChild(row("", empty));
       stage.appendChild(gap());
       stage.appendChild(row("", '<div class="actions"><a class="btn" href="#apercu">Aperçu</a></div>'));
@@ -802,14 +821,14 @@
       stopAudio(); closeFiche(false);
       stage.innerHTML = "";
       if (pos >= queue.length) {
-        stage.appendChild(row("", "<p>Terminé : " + right + " sur " + total + " du premier coup.</p>"));
+        stage.appendChild(row("", "<p class=\"glossable\">Terminé : " + right + " sur " + total + " du premier coup.</p>"));
         stage.appendChild(gap());
         stage.appendChild(row("", '<div class="actions"><a class="btn" href="#apercu">Aperçu</a></div>'));
         updateDue(); glossify(stage);
         return;
       }
       var q = queue[pos];
-      stage.appendChild(row("", '<p class="progress">' + (pos + 1) + " sur " + queue.length + "</p>"));
+      stage.appendChild(row("", '<p class="progress glossable">' + (pos + 1) + " sur " + queue.length + "</p>"));
       var nextBtn = h("button", { type: "button", class: "primary", text: "Suivant", title: "Next" });
       nextBtn.addEventListener("click", function () { pos++; step(); });
       var after = row("", null); $(".txt", after).appendChild(h("div", { class: "actions" })); after.hidden = true;
@@ -830,7 +849,7 @@
         stage.appendChild(row(note("mot"), line));
         var reveal = h("button", { type: "button", text: "Voir la réponse", title: "Show the meaning" });
         var ans = h("div", { hidden: true });
-        ans.innerHTML = '<p class="fiche-en">' + esc(m.en) + "</p>";
+        ans.innerHTML = (m.ipa ? '<p class="ipa soft">' + esc(m.ipa) + "</p>" : "") + '<p class="fiche-en">' + esc(m.en) + "</p>";
         var know = h("button", { type: "button", class: "primary", text: "Je savais", title: "I knew it" });
         var again = h("button", { type: "button", text: "À revoir", title: "Show it again" });
         var grade = h("div", { class: "actions" }); grade.appendChild(know); grade.appendChild(again); ans.appendChild(grade);
@@ -846,6 +865,7 @@
         stage.appendChild(row("", box2));
       }
       stage.appendChild(after);
+      glossify(stage);
     }
     step();
   }

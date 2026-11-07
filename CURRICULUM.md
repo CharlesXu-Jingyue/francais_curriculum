@@ -253,7 +253,7 @@ francais_curriculum/
 | Milestone | Contents |
 |---|---|
 | **v0.1** (done) | Page shell, overview, audio, drill engine, SRS, progress export; units F1, F2, 1, 2, 3 fully written |
-| **v0.2** | Rest of Phase 1 (units 4 to 18), written a few weeks ahead of your pace |
+| **v0.2** (in progress) | Rest of Phase 1 (units 4 to 18), written a few weeks ahead of your pace. Units 4 and 5 done |
 | **v0.3** | Phase 2 (A2) |
 | **v0.4** | Phase 3 (B1) |
 | **later** | Phase 4 detailed plan; exam-format track if needed |
@@ -269,3 +269,4 @@ Content is written ahead of where you are, not all at once, so later units can a
 | 2026-11-06 | First draft from the intake survey |
 | 2026-11-06 | Added fiches (tap-a-word translation) and the shared glossary file |
 | 2026-11-06 | v0.1 built: overview page, units F1, F2, 1, 2, 3; unit format in `content/README.md` |
+| 2026-11-06 | Units 4 and 5; every French word on the page has a fiche, with IPA; GitHub Pages workflow |

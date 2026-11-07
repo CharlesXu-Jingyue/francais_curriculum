@@ -154,7 +154,7 @@ Translation comes in three layers, each giving a little more help than the last.
 
 | Layer | What you do | What you get |
 |---|---|---|
-| Word | Tap any French word: examples, reading, tables, headings, margin notes, the date | Its fiche: the word with its inks, the dictionary form with its article (*une librairie, nom féminin*), the analysis of an inflected form (*présent : nous*), the English meaning, a usage note or *faux ami* warning, and a button to hear it |
+| Word | Tap any French word: examples, reading, tables, headings, margin notes, the date, the overview | Its fiche: the word with its inks and its pronunciation in IPA, the dictionary form with its article (*une librairie, nom féminin*), the analysis of an inflected form (*présent : nous*), the English meaning, a usage note or *faux ami* warning, and a button to hear it |
 | Sentence | *Traduire la phrase* inside the fiche | The English of the sentence the word sits in |
 | Section | *Masquer / Afficher la traduction* beside a section heading | All translations in that section |
 
@@ -162,7 +162,7 @@ Defaults follow what each section is for:
 
 - **Exemples** show their English by default. They illustrate the grammar, and seeing form and meaning together is the point.
 - **Lecture** hides its English. It is comprehension practice, so the attempt comes first and the translation after.
-- **Exercise prompts** are not glossed, so a fiche can never give away an answer.
+- **Exercise prompts** become tappable once the exercise is answered, together with the explanation shown after it, so a fiche never gives an answer away. Instructions (*Corrigez l’erreur*, the verb in brackets) are tappable from the start.
 
 Other rules:
 
@@ -209,3 +209,4 @@ Other rules:
 | 2026-11-06 | First version from the design interview; mockup of unit 3 |
 | 2026-11-06 | Darker Ardoise slate; fainter Cahier ruling; tap-a-word fiches and translation layers (§7) |
 | 2026-11-06 | v0.1 page: overview, Sommaire, Réglages, Révision, séance markers, stoppable audio sequences |
+| 2026-11-06 | Every French word on the page has a fiche; fiches show IPA; dialogues one line per speaker |

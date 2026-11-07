@@ -25,10 +25,12 @@ const keyOf = (w) => w.toLowerCase().replace(/’/g, "'");
 const TAGS = new Set(["e", "s", "m", "f", "pc", "imp", "fr", "ipa", "b"]);
 const TYPES = new Set(["form", "cloze", "choose", "ecoute", "transform", "translate", "dictee", "spot", "sort"]);
 
-const lex = new Map();
-for (const r of ctx.window.LEXIQUE) lex.set(r[0], "shared");
-
 let failed = false;
+const lex = new Map();
+for (const r of ctx.window.LEXIQUE) {
+  lex.set(r[0], "shared");
+  if (r.length !== 8 || !/^\/[^/\s][^/]*\/$/.test(r[7])) { console.log(`content/lexique.js: "${r[0]}" needs its IPA as the 8th field`); failed = true; }
+}
 
 function parseMarkup(s, where, errs) {
   // returns { plain, fr: [strings inside {fr:}] }
@@ -77,7 +79,8 @@ for (const ph of M.phases) {
     if (!u) { console.log(`\n${mu.id}: file did not call registerUnit`); failed = true; continue; }
     // lexicon first, so the unit's own words count
     for (const [i, r] of (u.lexique || []).entries()) {
-      if (!Array.isArray(r) || r.length !== 7) { errs.push(`lexique[${i}]: needs 7 fields`); continue; }
+      if (!Array.isArray(r) || r.length !== 8) { errs.push(`lexique[${i}] "${r && r[0]}": needs 8 fields (the last is the IPA)`); continue; }
+      if (!/^\/[^/\s][^/]*\/$/.test(r[7])) errs.push(`lexique "${r[0]}": IPA must look like /paʁle/`);
       if (r[0] !== r[0].toLowerCase() || /’/.test(r[0])) errs.push(`lexique key "${r[0]}": lower case, straight apostrophe`);
       if (!["", "m", "f"].includes(r[3])) errs.push(`lexique "${r[0]}": gender must be "", "m" or "f"`);
       if (lex.has(r[0])) warns.push(`lexique "${r[0]}" already defined in ${lex.get(r[0])}`);
