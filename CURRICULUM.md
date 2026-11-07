@@ -198,6 +198,7 @@ Each phase ends with a checkpoint keyed to the DELF grammar inventory for that l
 - **Drill engine** with immediate feedback and an explanation for each item.
 - **Review queue (SRS)**: a five-box Leitner scheme. Correct moves an item up a box (longer interval), wrong sends it back to box 1. Intervals: 1, 3, 7, 16, 35 days.
 - **Accent bar**: one-click é è ê ë à â ç î ï ô û ù œ for typing answers.
+- **Fiches**: tap any French word for its meaning and grammatical analysis, with the sentence translation one step further; looked-up words can be added to the review queue (details in `DESIGN.md` §7).
 - **Progress**: saved in the browser, with export/import to a `progress.json` file so it can be committed to the repo and moved between machines.
 - **Light and dark themes**.
 
@@ -236,6 +237,7 @@ francais_curriculum/
 │   └── app.js             ← rendering, drill engine, SRS, audio
 ├── content/
 │   ├── manifest.js        ← phase and unit order
+│   ├── lexique.js         ← shared glossary behind the fiches
 │   └── units/
 │       ├── f1.js
 │       ├── f2.js
@@ -265,3 +267,4 @@ Content is written ahead of where you are, not all at once, so later units can a
 | Date | Change |
 |---|---|
 | 2026-11-06 | First draft from the intake survey |
+| 2026-11-06 | Added fiches (tap-a-word translation) and the shared glossary file |
