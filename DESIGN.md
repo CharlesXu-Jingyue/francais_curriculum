@@ -17,6 +17,7 @@ Reference mockup: [`design/mockup.html`](design/mockup.html) (unit 3, *le prése
 | Dark mode | **Ardoise**: a school slate with chalk | The second French classroom surface; same colour grammar translated into chalk |
 | Layout | One column, read top to bottom like a notebook page | Fits both desk and phone, which you use about equally |
 | Devices | Mixed evenly: designed to work equally on phone, tablet and desktop | |
+| Translation | **Tap a word for its fiche**: meaning plus grammatical analysis, with the whole sentence one step further (§7) | Works the same on phone and desk; graded help keeps your own attempt first; shows grammar, which a translator cannot |
 
 ---
 
@@ -57,7 +58,10 @@ Rules that keep the highlighters from becoming noise:
 | `--red` | Wrong answer: the attempt struck through, the correct form written beside it | `#C42F2B` | `#FF8C84` |
 | `--end` (violet) | *Presque*: right except for accents | as above | as above |
 | `--margin-line` | The notebook's margin line and the ruled underline of the unit title (decorative, never used for text) | `#E2606A` | faded red chalk |
-| `--rule-*` | Seyès ruling | violet, three strengths | chalk, three strengths |
+| `--paper` | Page background | near-white `#FBFBF9` | deep slate `#1C2220` |
+| `--card` | Fiche background | white `#FFFFFF` | lighter slate `#262D2A` |
+| `--rule-*` | Seyès ruling | violet at 22% (heavy), 8% (thin), 6% (vertical) | chalk at 15%, 5%, 4% |
+| `--ctl` | Outlines of buttons and switches, kept stronger than the ruling | violet at 34% | chalk at 24% |
 
 Red and green are reserved for feedback. Nothing else on the page uses them as text colours.
 
@@ -134,32 +138,66 @@ Exercice 1│  Vous cherchez la clé ?  Très bien !
 | Accent bar | é è ê à ç ô î û as small square keys; inserts at the cursor of the last answer field |
 | Buttons | Thin ruled outline, Spectral; the primary action (*Vérifier*) filled in fountain-pen blue |
 | Legend | One line under *Le système* listing the inks and highlighters active in the unit |
+| Fiche | Opens on any French word. A plain card with a coloured top band (the word's gender highlighter, or neutral), modelled on the *fiche bristol* French students revise with. Desktop: anchored under the word, or above it when there is no room. Phone: slides up as a bottom sheet. See §7 |
+| Button tooltips | Every French button carries its English name as a tooltip on desktop |
+| Aperçu (overview) | The start page. One row per stage: level in the margin (with *vous êtes ici* on the current stage), name and weeks, one English can-do sentence, the key grammar in French, progress, and a collapsible unit list. Then the weekly rhythm, a one-line key to the inks, and a single *Commencer* / *Reprendre* button |
+| Sommaire | A drawer from the left listing every unit by stage; written units are links, the rest are marked *à venir*, finished ones *faite* |
+| Réglages | A small panel: reading speed, voice, theme (Cahier, Ardoise, Système), ruling density, and progress (Télécharger, Copier, Importer) |
+| Révision | One card at a time with a running count. Exercises reuse the unit's drill; words show the French with audio, then *Voir la réponse* and *Je savais* / *À revoir*. A missed card returns once at the end of the session |
+| Séances | Margin notes *séance 1* to *séance 4* mark where each of the week's four sessions starts |
 
 ---
 
-## 7. Motion and sound
+## 7. Translation on demand
+
+Translation comes in three layers, each giving a little more help than the last. You tap; nothing appears on hover. Hover does not exist on phones, and a gloss that pops up whenever the pointer passes over a word gives the answer away before you have tried.
+
+| Layer | What you do | What you get |
+|---|---|---|
+| Word | Tap any French word: examples, reading, tables, headings, margin notes, the date | Its fiche: the word with its inks, the dictionary form with its article (*une librairie, nom féminin*), the analysis of an inflected form (*présent : nous*), the English meaning, a usage note or *faux ami* warning, and a button to hear it |
+| Sentence | *Traduire la phrase* inside the fiche | The English of the sentence the word sits in |
+| Section | *Masquer / Afficher la traduction* beside a section heading | All translations in that section |
+
+Defaults follow what each section is for:
+
+- **Exemples** show their English by default. They illustrate the grammar, and seeing form and meaning together is the point.
+- **Lecture** hides its English. It is comprehension practice, so the attempt comes first and the translation after.
+- **Exercise prompts** are not glossed, so a fiche can never give away an answer.
+
+Other rules:
+
+- **Every gloss is written by hand** in the unit data (a lexicon per unit plus a shared one), never machine-translated. A gloss can be overridden for a single occurrence where context changes the meaning (*des* as an article vs *de + les*).
+- **Fiches feed the review queue.** *Ajouter à la révision* puts the word into spaced repetition; the words you look up are the best signal of what you do not know yet.
+- **Interface words** (*Vérifier*, *Sommaire* and the like) carry English tooltips on desktop. On phones they stay French: there are about fifteen of them and they recur every session.
+
+---
+
+## 8. Motion and sound
 
 - **One motion moment**: corrections appear left to right, as if being written. Turned off when the system asks for reduced motion.
+- **Audio controls**: every speaker button plays one line. *Tout écouter* plays all the examples and turns into *Arrêter* while playing; *Écouter et répéter* pauses after each example (about 1.3 times its length) and writes *à vous* in the margin; *Écouter le texte* reads the reading passage sentence by sentence. Any other audio, a page change, or *Arrêter* stops a sequence.
 - **Audio** uses the browser's French voice. The page prefers an enhanced fr-FR voice when one is installed. Reading speed is 0.7, 0.85 (default) or 1.0. *Tout écouter* plays all the examples in turn with a pause between them.
 
 ---
 
-## 8. Accessibility
+## 9. Accessibility
 
 - Colour is never the only carrier for corrections: wrong answers are also struck through, and every verdict is written out in words.
 - The ink grammar relies on colour by design. Planned support for colour-blind readers: an optional secondary cue (dotted underline for silent letters, solid underline for audible endings).
 - Visible keyboard focus everywhere; Enter submits an answer.
+- Words open their fiche with Enter or Space; Escape closes it and returns focus to the word. The real page will give each sentence one tab stop, with arrow keys between its words, so tabbing to the exercises stays short.
 - Contrast is checked in both themes; graphite is the lightest ink and is used only for letters that are deliberately de-emphasised.
 
 ---
 
-## 9. Open decisions
+## 10. Settled decisions
 
-| Question | Current default |
+| Question | Decision |
 |---|---|
 | Ruling density default | *Moyen* |
 | Gender highlighter colours | Blue / pink (the usual French classroom convention) |
-| Language of the interface (buttons, labels) | French throughout, as light immersion |
+| Language of the interface (buttons, labels) | French throughout, with English tooltips on buttons |
+| Translation | Tap-a-word fiches with graded help (§7) |
 | Progress display in the *Sommaire* | To be designed with v0.1 |
 
 ---
@@ -169,3 +207,5 @@ Exercice 1│  Vous cherchez la clé ?  Très bien !
 | Date | Change |
 |---|---|
 | 2026-11-06 | First version from the design interview; mockup of unit 3 |
+| 2026-11-06 | Darker Ardoise slate; fainter Cahier ruling; tap-a-word fiches and translation layers (§7) |
+| 2026-11-06 | v0.1 page: overview, Sommaire, Réglages, Révision, séance markers, stoppable audio sequences |

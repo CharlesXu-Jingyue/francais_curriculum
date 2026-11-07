@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cahier de français</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus&family=Playwrite+FR+Moderne:wght@300;400&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+  /* apply the saved theme and ruling before the first paint */
+  try {
+    var st = (JSON.parse(localStorage.getItem("francais-cahier-v1") || "{}").settings) || {};
+    if (st.theme === "light" || st.theme === "dark") document.documentElement.setAttribute("data-theme", st.theme);
+    document.documentElement.setAttribute("data-grid", st.grid || "moyen");
+  } catch (e) {}
+</script>
+</head>
+<body>
+<header class="bar">
+  <button id="btn-sommaire" type="button" title="Contents: all units" aria-expanded="false">Sommaire</button>
+  <span class="where" id="where"></span>
+  <span class="spacer"></span>
+  <button id="btn-revision" type="button" title="Review queue">Révision <span class="count" id="due-count" hidden></span></button>
+  <button id="btn-reglages" type="button" title="Settings" aria-expanded="false" aria-controls="panel">Réglages</button>
+</header>
+<main class="sheet" id="sheet">
+  <noscript><p>This page needs JavaScript.</p></noscript>
+</main>
+<script src="content/manifest.js"></script>
+<script src="content/lexique.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

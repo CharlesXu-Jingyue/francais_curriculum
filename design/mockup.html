@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cahier de français</title>
+<title>Maquette du cahier</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,12 +14,17 @@
 :root {
   /* paper and ruling */
   --paper: #FBFBF9;
-  --rule-strong: rgba(104, 94, 186, .30);
-  --rule-thin: rgba(104, 94, 186, .11);
-  --rule-vert: rgba(104, 94, 186, .08);
+  --rule-strong: rgba(104, 94, 186, .22);
+  --rule-thin: rgba(104, 94, 186, .08);
+  --rule-vert: rgba(104, 94, 186, .06);
+  --rule-thin-full: rgba(104, 94, 186, .13);
+  --rule-vert-full: rgba(104, 94, 186, .11);
   --margin-line: #E2606A;
   --veil: rgba(251, 251, 249, .78);
   --bar: rgba(251, 251, 249, .96);
+  --ctl: rgba(104, 94, 186, .34);         /* outlines of controls */
+  --card: #FFFFFF;                         /* fiche bristol */
+  --shadow: 0 10px 28px rgba(28, 36, 78, .16), 0 1px 0 rgba(28, 36, 78, .06);
   /* inks: morphology layer */
   --ink: #1C244E;          /* blue-black: explanations in English */
   --fr: #2141AC;           /* fountain-pen blue: French text, stems */
@@ -44,13 +49,18 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #2C3531;
+    --paper: #1C2220;
     --rule-strong: rgba(232, 238, 228, .15);
     --rule-thin: rgba(232, 238, 228, .05);
     --rule-vert: rgba(232, 238, 228, .04);
+    --rule-thin-full: rgba(232, 238, 228, .09);
+    --rule-vert-full: rgba(232, 238, 228, .08);
     --margin-line: rgba(255, 140, 130, .55);
-    --veil: rgba(44, 53, 49, .80);
-    --bar: rgba(44, 53, 49, .97);
+    --veil: rgba(28, 34, 32, .82);
+    --bar: rgba(28, 34, 32, .97);
+    --ctl: rgba(232, 238, 228, .24);
+    --card: #262D2A;
+    --shadow: 0 12px 32px rgba(0, 0, 0, .55), 0 0 0 1px rgba(232, 238, 228, .08);
     --ink: #E6E9E1;
     --fr: #B9D2FF;
     --end: #D6B2FF;
@@ -58,21 +68,26 @@
     --soft: rgba(230, 233, 225, .62);
     --red: #FF8C84;
     --green: #9FE3A0;
-    --hl-m: rgba(130, 200, 255, .26);
-    --hl-f: rgba(255, 150, 200, .26);
-    --hl-pc: rgba(255, 190, 110, .28);
-    --hl-imp: rgba(150, 230, 130, .24);
+    --hl-m: rgba(130, 200, 255, .30);
+    --hl-f: rgba(255, 150, 200, .30);
+    --hl-pc: rgba(255, 190, 110, .32);
+    --hl-imp: rgba(150, 230, 130, .28);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #2C3531;
+  --paper: #1C2220;
   --rule-strong: rgba(232, 238, 228, .15);
   --rule-thin: rgba(232, 238, 228, .05);
   --rule-vert: rgba(232, 238, 228, .04);
+  --rule-thin-full: rgba(232, 238, 228, .09);
+  --rule-vert-full: rgba(232, 238, 228, .08);
   --margin-line: rgba(255, 140, 130, .55);
-  --veil: rgba(44, 53, 49, .80);
-  --bar: rgba(44, 53, 49, .97);
+  --veil: rgba(28, 34, 32, .82);
+  --bar: rgba(28, 34, 32, .97);
+  --ctl: rgba(232, 238, 228, .24);
+  --card: #262D2A;
+  --shadow: 0 12px 32px rgba(0, 0, 0, .55), 0 0 0 1px rgba(232, 238, 228, .08);
   --ink: #E6E9E1;
   --fr: #B9D2FF;
   --end: #D6B2FF;
@@ -80,18 +95,19 @@
   --soft: rgba(230, 233, 225, .62);
   --red: #FF8C84;
   --green: #9FE3A0;
-  --hl-m: rgba(130, 200, 255, .26);
-  --hl-f: rgba(255, 150, 200, .26);
-  --hl-pc: rgba(255, 190, 110, .28);
-  --hl-imp: rgba(150, 230, 130, .24);
+  --hl-m: rgba(130, 200, 255, .30);
+  --hl-f: rgba(255, 150, 200, .30);
+  --hl-pc: rgba(255, 190, 110, .32);
+  --hl-imp: rgba(150, 230, 130, .28);
   color-scheme: dark;
 }
 
 /* ruling density */
 :root[data-grid="discret"] { --rule-thin: transparent; --rule-vert: transparent; }
-:root[data-grid="complet"] { --rule-thin: rgba(104, 94, 186, .17); --rule-vert: rgba(104, 94, 186, .14); }
+:root[data-grid="complet"] { --rule-thin: var(--rule-thin-full); --rule-vert: var(--rule-vert-full); }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background-color: var(--paper);
@@ -117,20 +133,20 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
   padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
   background: var(--bar);
-  box-shadow: 0 1px 0 var(--rule-strong);
+  box-shadow: 0 1px 0 var(--ctl);
   display: flex; align-items: center; gap: 16px;
 }
 .bar .where { flex: 1; min-width: 0; color: var(--soft); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.seg { display: inline-flex; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--rule-strong); }
+.seg { display: inline-flex; border-radius: 5px; box-shadow: inset 0 0 0 1px var(--ctl); }
 .seg button { border-radius: 0; box-shadow: none; }
-.seg button + button { box-shadow: inset 1px 0 0 var(--rule-strong); }
+.seg button + button { box-shadow: inset 1px 0 0 var(--ctl); }
 .seg button[aria-pressed="true"] { color: var(--paper); background: var(--fr); }
 
 button {
   font: 15px/1 var(--text); color: var(--fr);
   height: 32px; padding: 0 12px;
   background: transparent; border: 0; border-radius: 5px;
-  box-shadow: inset 0 0 0 1px var(--rule-strong);
+  box-shadow: inset 0 0 0 1px var(--ctl);
   cursor: pointer;
 }
 button:hover { background: var(--hl-m); }
@@ -235,13 +251,51 @@ td.pr { color: var(--fr); }
 .toggle { font-size: 15px; color: var(--soft); display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
 .toggle input { accent-color: var(--fr); width: 16px; height: 16px; margin: 0; }
 
+/* word fiches: tap any French word for meaning and analysis */
+.w { cursor: pointer; border-radius: 2px; }
+@media (hover: hover) { .w:hover { text-decoration: underline dotted; text-decoration-color: var(--soft); text-underline-offset: 5px; } }
+.w.on { text-decoration: underline solid; text-decoration-color: var(--fr); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+.w:focus-visible { outline: 2px solid var(--fr); outline-offset: 1px; }
+.fiche {
+  position: absolute; z-index: 8;
+  width: 320px; max-width: calc(100vw - 32px);
+  background: var(--card);
+  border-radius: 4px; box-shadow: var(--shadow);
+  padding: 14px 16px 16px; color: var(--ink);
+  font: 15px/24px var(--text);
+}
+.fiche::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: 4px 4px 0 0; background: var(--band, var(--ctl)); }
+.fiche:not([hidden]) { animation: fiche-in .14s ease-out; }
+@keyframes fiche-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .fiche:not([hidden]) { animation: none; } }
+.fiche-head { display: flex; align-items: center; gap: 2px; }
+.fiche-mot { flex: 1; min-width: 0; font: 400 22px/32px var(--text); color: var(--fr); overflow-wrap: anywhere; }
+.fiche-x { width: 32px; padding: 0; box-shadow: none; color: var(--soft); font-size: 22px; }
+.fiche p { margin: 0; }
+.fiche-a { color: var(--soft); }
+.fiche-en { font-size: 17px; color: var(--ink); }
+.fiche-n { font-style: italic; color: var(--soft); font-size: 14px; }
+.fiche-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.fiche-actions button { font-size: 14px; }
+.fiche-ph { margin-top: 8px; color: var(--ink); font-style: italic; }
+@media (max-width: 640px) {
+  .fiche {
+    position: fixed; left: 0 !important; right: 0; top: auto !important; bottom: 0;
+    width: auto; max-width: none; border-radius: 12px 12px 0 0;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+  .fiche::before { border-radius: 12px 12px 0 0; }
+}
+
 /* mockup settings */
 .reglages {
   position: fixed; z-index: 6;
   right: max(16px, env(safe-area-inset-right, 0px));
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   background: var(--bar); border-radius: 8px;
-  box-shadow: 0 0 0 1px var(--rule-strong), 0 6px 20px rgba(20, 24, 50, .12);
+  box-shadow: 0 0 0 1px var(--ctl), var(--shadow);
   padding: 8px 12px; display: flex; flex-direction: column; gap: 4px;
   font-size: 14px; line-height: 24px; color: var(--soft);
 }
@@ -265,12 +319,12 @@ td.pr { color: var(--fr); }
 </head>
 <body>
 <header class="bar">
-  <button id="sommaire" type="button" title="Liste des unités">Sommaire</button>
+  <button id="sommaire" type="button" title="Contents: all units">Sommaire</button>
   <span class="where">Phase 1, unité 3 sur 45</span>
   <div class="seg" role="group" aria-label="Vitesse de lecture">
-    <button type="button" data-rate="0.7" aria-pressed="false">Lente</button>
-    <button type="button" data-rate="0.85" aria-pressed="true">Moyenne</button>
-    <button type="button" data-rate="1" aria-pressed="false">Normale</button>
+    <button type="button" data-rate="0.7" aria-pressed="false" title="Slow">Lente</button>
+    <button type="button" data-rate="0.85" aria-pressed="true" title="Medium speed">Moyenne</button>
+    <button type="button" data-rate="1" aria-pressed="false" title="Normal speed">Normale</button>
   </div>
   <button id="theme" type="button">Ardoise</button>
 </header>
@@ -327,9 +381,9 @@ td.pr { color: var(--fr); }
   </div></div>
 
   <div class="gap"></div>
-  <div class="row"><div class="marge"></div><div class="txt" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+  <div class="row"><div class="marge"><span class="note fr">touchez un mot</span></div><div class="txt" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
     <h2><span class="num">III.</span>Exemples</h2>
-    <span style="display:flex;gap:8px"><button type="button" id="ecouter-tout">Tout écouter</button><button type="button" id="gloss">Masquer la traduction</button></span>
+    <span style="display:flex;gap:8px"><button type="button" id="ecouter-tout" title="Play all examples">Tout écouter</button><button type="button" id="gloss" title="Hide or show the English">Masquer la traduction</button></span>
   </div></div>
   <div id="exemples">
     <div class="row ex"><div class="marge"><button class="say" type="button" aria-label="Écouter"></button></div><div class="txt">
@@ -350,12 +404,12 @@ td.pr { color: var(--fr); }
     <div class="row"><div class="marge"><span class="note">Exercice 1</span></div><div class="txt">
       <div class="task">Vous <input class="blank" id="q1" aria-label="Réponse, exercice 1" value="cherchez" autocomplete="off" spellcheck="false"> la clé ? <span class="hint">(chercher)</span> <span id="r1"></span></div>
     </div></div>
-    <div class="row"><div class="marge" id="m1"></div><div class="txt"><div class="actions"><button type="button" data-check="1">Vérifier</button></div></div></div>
+    <div class="row"><div class="marge" id="m1"></div><div class="txt"><div class="actions"><button type="button" data-check="1" title="Check">Vérifier</button></div></div></div>
     <div class="gap"></div>
     <div class="row"><div class="marge"><span class="note">Exercice 2</span></div><div class="txt">
       <div class="task">Ils <input class="blank" id="q2" aria-label="Réponse, exercice 2" value="aimes" autocomplete="off" spellcheck="false"> le café. <span class="hint">(aimer)</span> <span id="r2"></span></div>
     </div></div>
-    <div class="row"><div class="marge" id="m2"></div><div class="txt"><div class="actions"><button type="button" data-check="2">Vérifier</button></div></div></div>
+    <div class="row"><div class="marge" id="m2"></div><div class="txt"><div class="actions"><button type="button" data-check="2" title="Check">Vérifier</button></div></div></div>
     <div class="gap"></div>
     <div class="row"><div class="marge"><span class="note">Exercice 3</span></div><div class="txt">
       <div class="task">Dictée : écoutez, puis écrivez la phrase.</div>
@@ -366,27 +420,38 @@ td.pr { color: var(--fr); }
     <div class="row"><div class="marge" id="m3"></div><div class="txt">
       <div class="actions"><div class="accents" aria-label="Accents">
         <button type="button">é</button><button type="button">è</button><button type="button">ê</button><button type="button">à</button><button type="button">ç</button><button type="button">ô</button><button type="button">î</button><button type="button">û</button>
-      </div><button type="button" class="primary" data-check="3">Vérifier</button><span id="r3"></span></div>
+      </div><button type="button" class="primary" data-check="3" title="Check">Vérifier</button><span id="r3"></span></div>
     </div></div>
   </div>
 
   <div class="gap"></div>
   <div class="row"><div class="marge"></div><div class="txt" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
     <h2><span class="num">V.</span>Lecture</h2>
-    <label class="toggle"><input type="checkbox" id="code-lecture"> Code couleur</label>
+    <span style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><label class="toggle" title="Colour code"><input type="checkbox" id="code-lecture"> Code couleur</label><button type="button" id="lecture-tr" title="Show or hide the English">Afficher la traduction</button></span>
   </div></div>
   <div class="row"><div class="marge"><span class="note fr">librairie :<br>bookshop,<br>pas library</span></div><div class="txt">
-    <p class="reading plain" id="lecture">Léa <span class="st">habit</span><span class="mu">e</span> à Lyon. Elle <span class="st">travaill</span><span class="mu">e</span> dans <span class="hf">une librairie</span> près de <span class="hf">la gare</span>. <span class="hm">Le matin</span>, elle <span class="st">prépar</span><span class="mu">e</span> <span class="hm">un café</span> et elle <span class="st">écout</span><span class="mu">e</span> <span class="hf">la radio</span>. <span class="hm">Le soir</span>, elle <span class="st">retrouv</span><span class="mu">e</span> des amis et ils <span class="st">parl</span><span class="mu">ent</span> de livres.</p>
+    <p class="reading plain" id="lecture"><span class="s" data-en="Léa lives in Lyon.">Léa <span class="st">habit</span><span class="mu">e</span> à Lyon.</span> <span class="s" data-en="She works in a bookshop near the station.">Elle <span class="st">travaill</span><span class="mu">e</span> dans <span class="hf">une librairie</span> près de <span class="hf">la gare</span>.</span> <span class="s" data-en="In the morning, she makes a coffee and listens to the radio."><span class="hm">Le matin</span>, elle <span class="st">prépar</span><span class="mu">e</span> <span class="hm">un café</span> et elle <span class="st">écout</span><span class="mu">e</span> <span class="hf">la radio</span>.</span> <span class="s" data-en="In the evening, she meets up with friends and they talk about books."><span class="hm">Le soir</span>, elle <span class="st">retrouv</span><span class="mu">e</span> des amis et ils <span class="st">parl</span><span class="mu">ent</span> de livres.</span></p>
+    <p class="gl" id="lecture-en" hidden style="color:var(--soft);font-style:italic">Léa lives in Lyon. She works in a bookshop near the station. In the morning, she makes a coffee and listens to the radio. In the evening, she meets up with friends and they talk about books.</p>
   </div></div>
 </main>
 
 <div class="reglages" aria-label="Réglages de la maquette">
   <span>Quadrillage</span>
   <div class="seg" role="group" aria-label="Quadrillage">
-    <button type="button" data-grid="discret" aria-pressed="false">Discret</button>
-    <button type="button" data-grid="moyen" aria-pressed="true">Moyen</button>
-    <button type="button" data-grid="complet" aria-pressed="false">Complet</button>
+    <button type="button" data-grid="discret" aria-pressed="false" title="Faint">Discret</button>
+    <button type="button" data-grid="moyen" aria-pressed="true" title="Medium">Moyen</button>
+    <button type="button" data-grid="complet" aria-pressed="false" title="Full">Complet</button>
   </div>
+</div>
+
+<div class="fiche" id="fiche" role="dialog" aria-labelledby="fiche-mot" tabindex="-1" hidden>
+  <div class="fiche-head"><span class="fiche-mot" id="fiche-mot"></span><button class="say" type="button" id="fiche-say" aria-label="Écouter le mot" title="Hear the word"></button><button class="fiche-x" type="button" id="fiche-x" aria-label="Fermer" title="Close">×</button></div>
+  <p class="fiche-l" id="fiche-l"></p>
+  <p class="fiche-a" id="fiche-a"></p>
+  <p class="fiche-en" id="fiche-en"></p>
+  <p class="fiche-n" id="fiche-n"></p>
+  <p class="fiche-ph" id="fiche-ph" hidden></p>
+  <div class="fiche-actions"><button type="button" id="fiche-phrase" title="Translate the whole sentence">Traduire la phrase</button><button type="button" id="fiche-rev" aria-pressed="false" title="Add this word to your review queue">Ajouter à la révision</button></div>
 </div>
 
 <script>
@@ -409,7 +474,7 @@ td.pr { color: var(--fr); }
     if (t) return t === 'dark';
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
-  function syncTheme() { themeBtn.textContent = isDark() ? 'Cahier' : 'Ardoise'; }
+  function syncTheme() { themeBtn.textContent = isDark() ? 'Cahier' : 'Ardoise'; themeBtn.title = isDark() ? 'Switch to the notebook (light)' : 'Switch to the slate (dark)'; }
   themeBtn.addEventListener('click', function () { root.setAttribute('data-theme', isDark() ? 'light' : 'dark'); syncTheme(); });
   syncTheme();
 
@@ -448,14 +513,22 @@ td.pr { color: var(--fr); }
   var lines = Array.prototype.slice.call(document.querySelectorAll('#exemples .row'));
   lines.forEach(function (row) {
     var btn = row.querySelector('.say'), line = row.querySelector('[data-say]');
-    btn.addEventListener('click', function () { say(line.textContent.replace('‿', ' '), btn); });
+    btn.addEventListener('click', function () { if (playing) stopAll(); say(line.textContent.replace(/‿/g, ' '), btn); });
   });
-  document.getElementById('ecouter-tout').addEventListener('click', function () {
-    var i = 0;
+  var allBtn = document.getElementById('ecouter-tout'), playing = 0;
+  function stopAll() {
+    playing = 0; allBtn.textContent = 'Tout écouter'; allBtn.setAttribute('aria-pressed', 'false');
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+  }
+  allBtn.addEventListener('click', function () {
+    if (playing) { stopAll(); return; }
+    var run = playing = Date.now(), i = 0;
+    allBtn.textContent = 'Arrêter'; allBtn.setAttribute('aria-pressed', 'true');
     (function next() {
-      if (i >= lines.length) return;
+      if (playing !== run) return;
+      if (i >= lines.length) { stopAll(); return; }
       var row = lines[i++];
-      say(row.querySelector('[data-say]').textContent.replace('‿', ' '), row.querySelector('.say'), function () { setTimeout(next, 700); });
+      say(row.querySelector('[data-say]').textContent.replace(/‿/g, ' '), row.querySelector('.say'), function () { if (playing === run) setTimeout(next, 700); });
     })();
   });
   var glossBtn = document.getElementById('gloss');
@@ -516,6 +589,225 @@ td.pr { color: var(--fr); }
     var n = b.dataset.check, input = document.getElementById('q' + n);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') b.click(); });
   });
+  /* ---------- fiches: lexicon (authored, never machine-translated) ---------- */
+  /* key, dictionary form, category, gender, analysis, English, note */
+  var L = [
+    ["le", "le", "article défini", "m", "masculin singulier", "the", "Becomes l’ before a vowel. Also an object pronoun (him, it), unit 19."],
+    ["la", "la", "article défini", "f", "féminin singulier", "the", "Becomes l’ before a vowel."],
+    ["l'", "le, la", "article défini", "", "élidé devant une voyelle", "the", "Elision hides the gender: learn the noun with un or une."],
+    ["un", "un", "article indéfini", "m", "masculin singulier", "a, an", ""],
+    ["une", "une", "article indéfini", "f", "féminin singulier", "a, an", ""],
+    ["des", "des", "article", "", "pluriel de un, une; ou de + les", "some; of the", "Often not translated: des amis, friends. In «des verbes», it is de + les."],
+    ["de", "de", "préposition", "", "", "of, from", "près de: near. parler de: talk about."],
+    ["à", "à", "préposition", "", "", "at, to, in", "à midi: at noon. à Lyon: in Lyon."],
+    ["dans", "dans", "préposition", "", "", "in, inside", ""],
+    ["près", "près", "adverbe", "", "", "near, close", "près de + noun: near (something)."],
+    ["et", "et", "conjonction", "", "", "and", "The t is never pronounced, not even before a vowel."],
+    ["en", "en", "préposition", "", "", "in", "les verbes en -er: verbs ending in -er. Also a pronoun, unit 21."],
+    ["sur", "sur", "préposition", "", "", "on; out of", "3 sur 45: 3 out of 45."],
+    ["pas", "pas", "adverbe de négation", "", "", "not", "ne ... pas wraps the verb, unit 2."],
+    ["je", "je", "pronom sujet", "", "1re personne du singulier", "I", "Becomes j’ before a vowel."],
+    ["j'", "je", "pronom sujet", "", "élidé devant une voyelle", "I", ""],
+    ["tu", "tu", "pronom sujet", "", "2e personne du singulier, familier", "you", "For one person you know well. vous is formal or plural."],
+    ["il", "il", "pronom sujet", "m", "3e personne du singulier", "he, it", ""],
+    ["elle", "elle", "pronom sujet", "f", "3e personne du singulier", "she, it", "Also «it» for a feminine noun: la gare, elle est loin."],
+    ["on", "on", "pronom sujet", "", "3e personne du singulier", "we (spoken), one, people", "In speech on usually replaces nous: on parle, we speak."],
+    ["nous", "nous", "pronom sujet", "", "1re personne du pluriel", "we", ""],
+    ["vous", "vous", "pronom sujet", "", "2e personne du pluriel, ou politesse", "you", ""],
+    ["ils", "ils", "pronom sujet", "m", "3e personne du pluriel", "they", "Masculine or mixed group. Sounds like il unless a liaison follows: ils‿écoutent /ilz‿ekut/."],
+    ["elles", "elles", "pronom sujet", "f", "3e personne du pluriel", "they (all feminine)", ""],
+    ["parler", "parler", "verbe en -er", "", "infinitif", "to speak, to talk", ""],
+    ["parle", "parler", "verbe en -er", "", "présent : je, il, elle, on", "speak, speaks", ""],
+    ["parles", "parler", "verbe en -er", "", "présent : tu", "speak", "The -es is silent: /paʁl/."],
+    ["parlons", "parler", "verbe en -er", "", "présent : nous", "speak", "-ons is heard: /paʁlɔ̃/."],
+    ["parlez", "parler", "verbe en -er", "", "présent : vous", "speak", "-ez is heard: /paʁle/."],
+    ["parlent", "parler", "verbe en -er", "", "présent : ils, elles", "speak, talk", "The -ent is silent: /paʁl/."],
+    ["travaille", "travailler", "verbe en -er", "", "présent : je, il, elle, on", "work, works", ""],
+    ["habite", "habiter", "verbe en -er", "", "présent : je, il, elle, on", "live, lives", "The h is silent, so je becomes j’: j’habite."],
+    ["mangeons", "manger", "verbe en -er", "", "présent : nous", "eat", "The e keeps the g soft /ʒ/ before o: mangeons, not mangons."],
+    ["écoutent", "écouter", "verbe en -er", "", "présent : ils, elles", "listen to", "No preposition: écouter la radio, listen to the radio."],
+    ["écoute", "écouter", "verbe en -er", "", "présent : je, il, elle, on", "listen to, listens to", ""],
+    ["prépare", "préparer", "verbe en -er", "", "présent : je, il, elle, on", "prepares, makes", "préparer un café: make a coffee."],
+    ["retrouve", "retrouver", "verbe en -er", "", "présent : je, il, elle, on", "meets up with", "Literally re- + trouver, to find again."],
+    ["aime", "aimer", "verbe en -er", "", "présent : je, il, elle, on", "like, love", ""],
+    ["aimons", "aimer", "verbe en -er", "", "présent : nous", "like, love", ""],
+    ["garde", "garder", "verbe en -er", "", "présent : je, il, elle, on", "keeps", ""],
+    ["googler", "googler", "verbe en -er", "", "infinitif", "to google", "New verbs enter French as -er verbs."],
+    ["liker", "liker", "verbe en -er", "", "infinitif", "to like (a post)", "Anglicism. aimer is the general verb."],
+    ["touchez", "toucher", "verbe en -er", "", "impératif : vous", "touch, tap", "An instruction: the imperative, unit 17."],
+    ["oral", "l’oral", "nom", "m", "", "speech, the spoken language", "à l’oral: in speech."],
+    ["écrit", "l’écrit", "nom", "m", "", "writing, the written language", "à l’écrit: in writing. Also the past participle of écrire."],
+    ["unité", "une unité", "nom", "f", "", "unit", ""],
+    ["objectif", "un objectif", "nom", "m", "", "objective, goal", ""],
+    ["système", "le système", "nom", "m", "", "system", "Masculine despite the -e: nouns in -ème from Greek are masculine (le problème, le thème)."],
+    ["exemples", "un exemple", "nom", "m", "pluriel", "examples", ""],
+    ["exercices", "un exercice", "nom", "m", "pluriel", "exercises", ""],
+    ["exercice", "un exercice", "nom", "m", "", "exercise", ""],
+    ["lecture", "la lecture", "nom", "f", "", "reading", "Faux ami: a lecture is un cours or une conférence."],
+    ["code", "le code", "nom", "m", "", "code", ""],
+    ["couleur", "la couleur", "nom", "f", "", "colour", "code couleur: colour code."],
+    ["élision", "l’élision", "nom", "f", "", "elision", "Dropping a vowel before another vowel: je + aime gives j’aime."],
+    ["liaison", "la liaison", "nom", "f", "", "liaison, linking", "Sounding a normally silent final consonant before a vowel."],
+    ["ancrage", "l’ancrage", "nom", "m", "", "anchoring", "From une ancre, an anchor."],
+    ["personnes", "une personne", "nom", "f", "pluriel", "persons, people", "Here: grammatical persons (je, tu, il...)."],
+    ["son", "le son", "nom", "m", "", "sound", "Also the possessive his, her (unit 7): son livre."],
+    ["seul", "seul", "adjectif", "m", "masculin singulier", "single, only, alone", "un seul son: a single sound."],
+    ["doux", "doux", "adjectif", "m", "masculin singulier", "soft, gentle", "Feminine: douce. A soft g is pronounced /ʒ/."],
+    ["mot", "un mot", "nom", "m", "", "word", ""],
+    ["laboratoire", "un laboratoire", "nom", "m", "", "laboratory", "Spoken: le labo."],
+    ["français", "le français", "nom", "m", "", "French (the language)", "Languages are masculine and take no capital: le français, l’allemand."],
+    ["gare", "une gare", "nom", "f", "", "(train) station", ""],
+    ["midi", "midi", "nom", "m", "", "noon, midday", "le Midi: the south of France."],
+    ["radio", "la radio", "nom", "f", "", "radio", ""],
+    ["soir", "le soir", "nom", "m", "", "evening", "le soir, with no preposition: in the evening, every evening."],
+    ["matin", "le matin", "nom", "m", "", "morning", "le matin: in the morning, every morning."],
+    ["librairie", "une librairie", "nom", "f", "", "bookshop", "Faux ami: a library is une bibliothèque."],
+    ["café", "un café", "nom", "m", "", "coffee; café", ""],
+    ["amis", "un ami", "nom", "m", "pluriel", "friends", "The -s is silent, but des amis has a liaison: /dez‿ami/."],
+    ["livres", "un livre", "nom", "m", "pluriel", "books", "la livre (feminine) is a pound."],
+    ["verbes", "un verbe", "nom", "m", "pluriel", "verbs", ""],
+    ["présent", "le présent", "nom", "m", "", "present (tense)", ""],
+    ["quadrillage", "le quadrillage", "nom", "m", "", "ruling, grid (of a notebook)", "From quadriller, to square off."],
+    ["léa", "Léa", "prénom", "f", "", "(a first name)", ""],
+    ["lyon", "Lyon", "nom de ville", "", "", "Lyon", ""]
+  ];
+  var lex = {};
+  L.forEach(function (r) { lex[r[0]] = { l: r[1], c: r[2], g: r[3], a: r[4], en: r[5], n: r[6] }; });
+  var EN_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var EN_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  jours.forEach(function (x, i) { lex[x] = { l: x, c: "nom", g: "m", a: "", en: EN_DAYS[i], n: "Days and months take no capital in French." }; });
+  mois.forEach(function (x, i) { lex[x] = { l: x, c: "nom", g: "m", a: "", en: EN_MONTHS[i], n: "Days and months take no capital in French." }; });
+
+  /* wrap every French word that has a lexicon entry, keeping its inks */
+  var SEL = ".date, h1, h2, .note, .where, .reglages > span, .f, .fr-line, .reading, td.pr, .tbl-wrap td:nth-child(2)";
+  var WORD = /[A-Za-zÀ-ÖØ-öø-ÿŒœ]+['’](?=[A-Za-zÀ-ÖØ-öø-ÿŒœ])|[A-Za-zÀ-ÖØ-öø-ÿŒœ]+(?:-[A-Za-zÀ-ÖØ-öø-ÿŒœ]+)*/g;
+  function glossify(box) {
+    var walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null);
+    var map = [], text = "", n;
+    while ((n = walker.nextNode())) {
+      if (n.nodeType === 1) { if (n.tagName === "BR") text += "\n"; continue; }
+      map.push({ node: n, start: text.length, len: n.data.length });
+      text += n.data;
+    }
+    function locate(pos, isEnd) {
+      for (var i = 0; i < map.length; i++) {
+        var m = map[i];
+        if (isEnd ? (pos > m.start && pos <= m.start + m.len) : (pos >= m.start && pos < m.start + m.len)) return { node: m.node, off: pos - m.start };
+      }
+      return null;
+    }
+    var toks = [], m;
+    WORD.lastIndex = 0;
+    while ((m = WORD.exec(text))) {
+      var key = m[0].toLowerCase().replace(/’/g, "'");
+      if (lex[key]) toks.push({ s: m.index, e: m.index + m[0].length, k: key });
+    }
+    for (var i = toks.length - 1; i >= 0; i--) {
+      var t = toks[i], a = locate(t.s, false), b = locate(t.e, true);
+      if (!a || !b) continue;
+      var r = document.createRange();
+      r.setStart(a.node, a.off); r.setEnd(b.node, b.off);
+      var w = document.createElement("span");
+      w.className = "w"; w.dataset.k = t.k; w.tabIndex = 0;
+      w.setAttribute("role", "button"); w.setAttribute("aria-haspopup", "dialog");
+      w.appendChild(r.extractContents());
+      r.insertNode(w);
+    }
+  }
+  Array.prototype.slice.call(document.querySelectorAll(SEL))
+    .filter(function (b) { return !b.parentElement.closest(SEL); })
+    .forEach(glossify);
+  document.querySelectorAll(".fr-line").forEach(function (l) {
+    var g = l.parentElement.querySelector(".gl"); if (g) l.dataset.en = g.textContent;
+  });
+
+  /* the fiche itself */
+  var fiche = document.getElementById("fiche"), current = null, revision = {};
+  var fMot = document.getElementById("fiche-mot"), fL = document.getElementById("fiche-l"), fA = document.getElementById("fiche-a"),
+      fEn = document.getElementById("fiche-en"), fN = document.getElementById("fiche-n"), fPh = document.getElementById("fiche-ph"),
+      fPhBtn = document.getElementById("fiche-phrase"), fRev = document.getElementById("fiche-rev");
+  var phone = window.matchMedia("(max-width: 640px)");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function closeFiche(returnFocus) {
+    if (!current) return;
+    var w = current; current = null;
+    w.classList.remove("on"); fiche.hidden = true;
+    if (returnFocus) w.focus();
+  }
+  function place(w) {
+    var r = w.getBoundingClientRect();
+    if (phone.matches) {
+      var room = window.innerHeight - fiche.offsetHeight - 16;
+      if (r.bottom > room) window.scrollBy({ top: r.bottom - room, behavior: reduce.matches ? "auto" : "smooth" });
+      return;
+    }
+    var fw = fiche.offsetWidth, fh = fiche.offsetHeight, vw = document.documentElement.clientWidth;
+    var left = Math.min(Math.max(16, r.left - 12), vw - fw - 16);
+    var top = r.bottom + 6;
+    if (top + fh > window.innerHeight - 8 && r.top - fh - 6 > 72) top = r.top - fh - 6;
+    fiche.style.left = (left + window.scrollX) + "px";
+    fiche.style.top = (top + window.scrollY) + "px";
+  }
+  function openFiche(w, byKey) {
+    if (current === w) { closeFiche(byKey); return; }
+    var e = lex[w.dataset.k]; if (!e) return;
+    if (current) current.classList.remove("on");
+    current = w; w.classList.add("on");
+    fMot.innerHTML = w.innerHTML;
+    var gtxt = /^(nom|adjectif)/.test(e.c) && e.g ? (e.g === "m" ? " masculin" : " féminin") : "";
+    fL.innerHTML = '<span class="f">' + e.l + "</span>, " + e.c + gtxt;
+    fA.textContent = e.a; fA.hidden = !e.a;
+    fEn.textContent = e.en;
+    fN.textContent = e.n; fN.hidden = !e.n;
+    fiche.style.setProperty("--band", e.g === "m" ? "var(--hl-m)" : e.g === "f" ? "var(--hl-f)" : "var(--ctl)");
+    var sent = w.closest("[data-en]");
+    fPhBtn.hidden = !sent; fPh.hidden = true; fPhBtn.textContent = "Traduire la phrase";
+    fPh.textContent = sent ? sent.dataset.en : "";
+    var inRev = !!revision[w.dataset.k];
+    fRev.setAttribute("aria-pressed", String(inRev));
+    fRev.textContent = inRev ? "Retirer de la révision" : "Ajouter à la révision";
+    fiche.hidden = false;
+    place(w);
+    if (byKey) fiche.focus();
+  }
+  document.addEventListener("click", function (ev) {
+    var w = ev.target.closest(".w");
+    if (w) { openFiche(w, false); return; }
+    if (current && !ev.target.closest("#fiche")) closeFiche(false);
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && current) { closeFiche(true); return; }
+    var w = ev.target.closest && ev.target.closest(".w");
+    if (w && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); openFiche(w, true); }
+  });
+  window.addEventListener("resize", function () { closeFiche(false); });
+  document.getElementById("fiche-x").addEventListener("click", function () { closeFiche(true); });
+  document.getElementById("fiche-say").addEventListener("click", function () {
+    if (!current) return;
+    var t = current.textContent, e = lex[current.dataset.k];
+    if (/['’]$/.test(t)) t = e.l.split(",")[0];
+    say(t, this);
+  });
+  fPhBtn.addEventListener("click", function () {
+    fPh.hidden = !fPh.hidden;
+    fPhBtn.textContent = fPh.hidden ? "Traduire la phrase" : "Masquer la phrase";
+    if (current) place(current);
+  });
+  fRev.addEventListener("click", function () {
+    if (!current) return;
+    var k = current.dataset.k, on = !revision[k];
+    if (on) revision[k] = true; else delete revision[k];
+    fRev.setAttribute("aria-pressed", String(on));
+    fRev.textContent = on ? "Retirer de la révision" : "Ajouter à la révision";
+  });
+
+  /* reading: whole translation after the attempt */
+  var lecBtn = document.getElementById("lecture-tr"), lecEn = document.getElementById("lecture-en");
+  lecBtn.addEventListener("click", function () {
+    lecEn.hidden = !lecEn.hidden;
+    lecBtn.textContent = lecEn.hidden ? "Afficher la traduction" : "Masquer la traduction";
+  });
+
   show(1, false); show(2, false);
 })();
 </script>
